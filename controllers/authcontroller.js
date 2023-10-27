@@ -1,29 +1,28 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const db = require("../database/db");
 
-const handlerLogin = async (res, req) => {
+const handlerLogin = async (req, res) => {
   const { username, pwd } = req.body;
 
-  if (!req || !res)
+  if (!username || !pwd)
     return res.status(401).message({ message: "need username and password" });
 
-  const foundUser = req.body; // TODO find username match from DB
-  if (!foundUser) return res.sendstatus(401);
+  const query = await db.collection("user").get();
+  const queryFound = query.docs.map((doc) => doc.data().username);
+  const foundUser = queryFound.filter((user) => user === username);
+
+  if (foundUser !== undefined) return res.sendStatus(401);
 
   const match = await bcrypt.compare(pwd, foundUser.password); // match password
   if (match) {
     const accessToken = jwt.sign(
       {
-        username: foundUser.username,
+        username: username,
       },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "3d" }
     );
-    /*const refreshToken = jwt.sign(
-      { username: foundUser.username },
-      process.env.REFRESH_TOKEN_SECRET, // REFRESH TOKEN
-      { expiresIn: "1d" }
-    );*/
 
     res.cookie("jwt", accessToken, {
       httpOnly: true,
