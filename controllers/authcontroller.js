@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken");
 const db = require("../database/db");
 
 const handlerLogin = async (req, res) => {
-  const { username, pwd } = req.body;
+  const { username, password } = req.body;
 
-  if (!username || !pwd)
+  if (!username || !password)
     return res.status(401).message({ message: "need username and password" });
 
   const query = await db.collection("user").get();
@@ -14,7 +14,7 @@ const handlerLogin = async (req, res) => {
 
   if (foundUser !== undefined) return res.sendStatus(401);
 
-  const match = await bcrypt.compare(pwd, foundUser.password); // match password
+  const match = await bcrypt.compare(password, foundUser.password); // match password
   if (match) {
     const accessToken = jwt.sign(
       {
