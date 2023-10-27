@@ -7,7 +7,7 @@ const handlerLogin = async (res, req) => {
   if (!req || !res)
     return res.status(401).message({ message: "need username and password" });
 
-  const foundUser = req.body; // find User
+  const foundUser = req.body; // TODO find username match from DB
   if (!foundUser) return res.sendstatus(401);
 
   const match = await bcrypt.compare(pwd, foundUser.password); // match password
@@ -39,4 +39,4 @@ const handlerLogin = async (res, req) => {
   }
 };
 
-module.exports = handlerLogin;
+module.exports = { handlerLogin };
