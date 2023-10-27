@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 8000;
 const cors = require("cors");
+require("dotenv").config();
 
 const feedRoutes = require("./routes/feed");
 const auth = require("./routes/auth");
@@ -10,7 +11,6 @@ const db = require("./database/db");
 
 app.use(express.json());
 app.use(cors());
-
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

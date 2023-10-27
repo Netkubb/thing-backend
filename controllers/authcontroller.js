@@ -6,7 +6,7 @@ const handlerLogin = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password)
-    return res.status(401).message({ message: "need username and password" });
+    return res.status(401).json({ message: "need username and password" });
 
   const query = await db.collection("user").get();
   const queryFound = query.docs.map((doc) => doc.data());
@@ -15,7 +15,8 @@ const handlerLogin = async (req, res) => {
   const foundUser = queryFound.filter((user) => user.username === username);
   //console.log(foundUser[0]);
 
-  if (foundUser === undefined) return res.sendStatus(404);
+  if (foundUser.length === 0)
+    return res.status(404).json({ message: "Incorrect username" });
 
   console.log(password);
   console.log(foundUser[0].password);
