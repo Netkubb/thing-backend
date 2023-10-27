@@ -5,10 +5,10 @@ const { collection } = require("firebase-admin/firestore");
 
 const handlerRegister = async (req, res) => {
   const { username, password } = req.body;
-  console.log(password);
-  console.log(password);
+  //console.log(password);
+  //console.log(password);
 
-  if (!username && !password)
+  if (!username || !password)
     return res
       .status(401)
       .json({ message: "username and password are require" });
@@ -18,7 +18,6 @@ const handlerRegister = async (req, res) => {
 
   const duplicate = queryduplicate.find((user) => user === username);
 
-  //console.log(duplicate);
   if (duplicate !== undefined) {
     return res.sendStatus(409);
   }
@@ -26,13 +25,13 @@ const handlerRegister = async (req, res) => {
   try {
     // Hash the password
     const saltRounds = 10;
-    const hashedPwd = await bcrypt.hash(password, saltRounds);
+    const hashedPwd = await bcrypt.hash(password, 10);
 
-    //console.log(hashedPwd);
+    console.log(hashedPwd);
 
     const result = await db.collection("user").add({
       username: username,
-      password: JSON.stringify(hashedPwd),
+      password: hashedPwd,
     }); // --------------------
     //console.log(result);
     res.status(201).json({ success: `New user ${username} created!` });

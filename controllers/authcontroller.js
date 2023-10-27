@@ -9,12 +9,21 @@ const handlerLogin = async (req, res) => {
     return res.status(401).message({ message: "need username and password" });
 
   const query = await db.collection("user").get();
-  const queryFound = query.docs.map((doc) => doc.data().username);
-  const foundUser = queryFound.filter((user) => user === username);
+  const queryFound = query.docs.map((doc) => doc.data());
+  //console.log(queryFound);
 
-  if (foundUser !== undefined) return res.sendStatus(401);
+  const foundUser = queryFound.filter((user) => user.username === username);
+  //console.log(foundUser[0]);
 
-  const match = await bcrypt.compare(password, foundUser.password); // match password
+  if (foundUser === undefined) return res.sendStatus(404);
+
+  console.log(password);
+  console.log(foundUser[0].password);
+
+  const match = await bcrypt.compare(password, foundUser[0].password);
+
+  console.log(match);
+  // match password
   if (match) {
     const accessToken = jwt.sign(
       {
