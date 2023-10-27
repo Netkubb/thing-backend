@@ -1,6 +1,4 @@
-const { query } = require("express");
 const db = require("../database/db");
-const { getDoc, doc } = require("firebase/firestore");
 
 // =======================================================================
 
@@ -40,19 +38,19 @@ const createNewPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   // no ID
-  if (!req?.body?._id) {
+  if (!req?.body?.id) {
     return res.status(400).json({ message: "ID are require" });
   }
   // req.body
-  const { _id, caption, like } = req.body;
+  const { id, caption, like } = req.body;
 
   // GET DATA BY ID
   const queryID = await db.collection("post").get();
-  const postDoc = queryID.docs.find((post) => post.id === _id); // Find post by ID(generated)
+  const postDoc = queryID.docs.find((post) => post.id === id); // คืนค่าตัวแรกที่เจอ id === _id
 
   // If the post doesn't exist in the DB
   if (!postDoc) {
-    return res.status(400).json({ message: `Video ID ${_id} not found` });
+    return res.status(400).json({ message: `Video ID ${id} not found` });
   }
 
   // UPDATE
@@ -66,7 +64,7 @@ const updatePost = async (req, res) => {
     updateData.like = like;
   }
 
-  // Update the post in the Firestore collection
+  // ref ไปที่ post ที่มี id === postDoc.id
   await db.collection("post").doc(postDoc.id).update(updateData);
 
   res.json({ message: "Post updated successfully" });
@@ -77,14 +75,20 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
   if (!req?.body?.id)
     return res.status(400).json({ messgae: "post ID require" });
-  const post = []; // TODO find video in DB
-  if (!post)
-    return res
-      .status(400)
-      .json({ message: `Video ID ${req.body.id} not found` });
 
-  const result = []; // ลบ video
-  res.json(result);
+  // id ใช้ลบ
+  const { id } = req.body;
+  //console.log(id);
+
+  // Find post.id === _id
+  const queryID = await db.collection("post").get();
+  const postDoc = queryID.docs.find((pos) => pos.id === id);
+
+  if (!postDoc)
+    return res.status(400).json({ message: `Video ID ${id} not found` });
+
+  await db.collection("post").doc(postDoc.id).delete();
+  res.json({ massege: `Video ID ${id} has been deleted` });
 };
 
 // =======================================================================
@@ -94,4 +98,4 @@ const addComment = async (req, res) => {
     return res.status(400).json({ messgae: "post ID require" });
 };
 
-module.exports = { getALLpost, createNewPost, updatePost };
+module.exports = { getALLpost, createNewPost, updatePost, deletePost };

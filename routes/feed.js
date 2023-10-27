@@ -6,6 +6,7 @@ router
   .route("/")
   .get(feedControl.getALLpost)
   .post(feedControl.createNewPost)
-  .put(feedControl.updatePost);
+  .put(feedControl.updatePost)
+  .delete(feedControl.deletePost);
 
 module.exports = router;
