@@ -25,8 +25,6 @@ app.use("/feed", feedRoutes);
 
 app.use("/auth", auth);
 
-app.use("/register", register);
-
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

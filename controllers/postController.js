@@ -1,12 +1,12 @@
-//MOCK post
-
-const { GCProfiler } = require("v8");
+const db = require("../database/db");
 
 const getALLpost = async (req, res) => {
-  const post = []; // TODO Get all emplyee
+  const postsQuery = await db.collection("post").get();
+  const posts = postsQuery.docs.map((post) => post.data());
+
   // No content
-  if (!post) return res.status(204).json({ message: "No post found" });
-  res.json(post);
+  if (!posts) return res.status(204).json({ message: "No post found" });
+  res.json(posts);
 };
 
 const createNewPost = async (req, res) => {
@@ -58,3 +58,5 @@ const addComment = async (req, res) => {
   if (!req?.body?.id)
     return res.status(400).json({ messgae: "post ID require" });
 };
+
+module.exports = { getALLpost };
