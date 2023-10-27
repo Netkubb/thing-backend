@@ -14,20 +14,18 @@ const handlerLogin = async (res, req) => {
   if (match) {
     const accessToken = jwt.sign(
       {
-        UserInfo: {
-          username: foundUser.username,
-        },
+        username: foundUser.username,
       },
-      process.env.ACCESS_TOKEN_SECRET, // ACCESS TOKEN
-      { expiresIn: "30s" }
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "3d" }
     );
-    const refreshToken = jwt.sign(
+    /*const refreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN_SECRET, // REFRESH TOKEN
       { expiresIn: "1d" }
-    );
+    );*/
 
-    res.cookie("jwt", refreshToken, {
+    res.cookie("jwt", accessToken, {
       httpOnly: true,
       sameSite: "None",
       secure: true,
