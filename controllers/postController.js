@@ -53,3 +53,8 @@ const deletePost = async (req, res) => {
   const result = []; // ลบ video
   res.json(result);
 };
+
+const addComment = async (req, res) => {
+  if (!req?.body?.id)
+    return res.status(400).json({ messgae: "post ID require" });
+};

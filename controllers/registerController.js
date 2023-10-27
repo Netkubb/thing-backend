@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const db = require("../database/db");
+const { addDoc, doc, collection } = require("firebase-admin/firestore");
 
 const handlerRegister = async (req, res) => {
   const { username, pwd } = req.body;
@@ -9,19 +11,25 @@ const handlerRegister = async (req, res) => {
       .status(401)
       .json({ message: "username and password are require" });
 
-  const duplicate = req.body; // TODO find username from DB
-  if (duplicate)
-    return res
-      .sendstatus(409)
-      .json({ massgae: "Unlucky your username has been use" });
+  const query = await db.collection("user").get();
+  const queryduplicate = query.docs.map((doc) => doc.data().username);
+
+  const duplicate = queryduplicate.find((user) => console.log(user));
+
+  console.log(duplicate);
+  if (duplicate !== undefined) {
+    return res.sendStatus(409);
+  }
 
   try {
     const hashedPwd = bcrypt.hash(pwd, 10);
-    // TODO create user in DB
 
-    // --------------------
+    const result = await db.collection("user").add({
+      username: username,
+      password: JSON.stringify(hashedPwd),
+    }); // --------------------
     console.log(result);
-    res.status(201).json({ success: `New user ${user} created!` });
+    res.status(201).json({ success: `New user ${username} created!` });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
