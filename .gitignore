@@ -16,4 +16,4 @@ benchmarks/graphs
 
 .env
 
-./database/serviceAccountKey.json
+database/serviceAccountKey.json

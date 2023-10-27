@@ -12,8 +12,7 @@ app.get("/", (req, res) => {
 
 app.get('/testDB',async (req, res) => {
     const result = await db.collection('user').get()
-    console.log(result.docs.map(doc => doc.data()))
-    res.send(1);
+    res.send(result.docs.map(doc => doc.data()));
 });
 
 app.use('/feed', feedRoutes);
