@@ -1,8 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const feedControl = require("../controllers/postController");
 
-router.get('/', (req, res) => {
-    res.send('Hello Feed!');
-});
+router.route("/").get(feedControl.getALLpost).post(feedControl.createNewPost);
 
 module.exports = router;

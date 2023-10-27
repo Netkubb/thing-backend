@@ -6,7 +6,6 @@ require("dotenv").config();
 
 const feedRoutes = require("./routes/feed");
 const auth = require("./routes/auth");
-const register = require("./routes/register");
 const db = require("./database/db");
 
 app.use(express.json());
