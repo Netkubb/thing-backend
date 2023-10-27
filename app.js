@@ -1,15 +1,16 @@
 const express = require("express");
 const app = express();
 const port = 8000;
+const cors = require("cors");
 
 const feedRoutes = require("./routes/feed");
 const auth = require("./routes/auth");
 const register = require("./routes/register");
 const db = require("./database/db");
-const bodyParser = require("body-parser");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(cors());
+
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
