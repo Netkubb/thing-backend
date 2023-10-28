@@ -19,7 +19,7 @@ const createNewPost = async (req, res) => {
   if (!req?.body?.videoURL) {
     return res.status(400).json({ message: "No video link found" });
   }
-  const { videoURL, like, caption } = req.body;
+  const { videoURL, like, caption, comment } = req.body;
 
   try {
     // post new data
@@ -27,6 +27,7 @@ const createNewPost = async (req, res) => {
       videoURL: videoURL,
       like: like,
       caption: caption,
+      comment: comment,
     });
     res.status(201).json({ massege: "create new post sucessful" });
   } catch (err) {
@@ -65,7 +66,11 @@ const updatePost = async (req, res) => {
   }
 
   // ref ไปที่ post ที่มี id === postDoc.id
-  await db.collection("post").doc(postDoc.id).update(updateData);
+  try {
+    await db.collection("post").doc(postDoc.id).update(updateData);
+  } catch (err) {
+    console.error(err);
+  }
 
   res.json({ message: "Post updated successfully" });
 };
@@ -85,10 +90,14 @@ const deletePost = async (req, res) => {
   const postDoc = queryID.docs.find((pos) => pos.id === id);
 
   if (!postDoc)
-    return res.status(400).json({ message: `Video ID ${id} not found` });
+    return res.status(400).json({ message: `Post ID ${id} not found` });
 
-  await db.collection("post").doc(postDoc.id).delete();
-  res.json({ massege: `Video ID ${id} has been deleted` });
+  try {
+    await db.collection("post").doc(postDoc.id).delete();
+    res.json({ massege: `Post ID ${id} has been deleted` });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 // =======================================================================
@@ -96,6 +105,50 @@ const deletePost = async (req, res) => {
 const addComment = async (req, res) => {
   if (!req?.body?.id)
     return res.status(400).json({ messgae: "post ID require" });
+
+  const { id, username, content } = req.body;
+
+  if (!username || !content)
+    return res
+      .status(400)
+      .json({ message: "Username and Content are require" });
+
+  const query = await db.collection("post").get();
+  const post = query.docs.find((pos) => pos.id === id);
+
+  if (!post)
+    return res.status(400).json({ message: `Post ID ${id} not found` });
+
+  // Old Json
+  let OldComments_String = post.data().comment || [];
+  const OldComments_Json = JSON.parse(OldComments_String);
+
+  // New comment Array
+  const NewComment_Json = { username: username, content: content };
+
+  // Push the new comment to the existing array.
+  OldComments_Json.push(NewComment_Json);
+
+  // Update ทำเป็น string
+  const UpdateComment_String = JSON.stringify(OldComments_Json);
+  // PUT
+
+  try {
+    await db
+      .collection("post")
+      .doc(post.id)
+      .update({ comment: UpdateComment_String });
+    res.json({ message: "Add comment successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to add comment" });
+  }
 };
 
-module.exports = { getALLpost, createNewPost, updatePost, deletePost };
+module.exports = {
+  getALLpost,
+  createNewPost,
+  updatePost,
+  deletePost,
+  addComment,
+};

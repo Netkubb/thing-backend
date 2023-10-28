@@ -9,4 +9,6 @@ router
   .put(feedControl.updatePost)
   .delete(feedControl.deletePost);
 
+router.put("/addComment", feedControl.addComment);
+
 module.exports = router;
