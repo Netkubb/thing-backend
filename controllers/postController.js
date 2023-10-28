@@ -5,8 +5,12 @@ const db = require("../database/db");
 const getALLpost = async (req, res) => {
   // get all post
   const postsQuery = await db.collection("post").get();
-  const posts = postsQuery.docs.map((post) => post.data());
-
+  const posts = postsQuery.docs.map((post) => {
+    const postData = post.data();
+    const postId = post.id;
+    return { id: postId, ...postData };
+  });
+  console.log("hi");
   // No content
   if (!posts) return res.status(204).json({ message: "No post found" });
   res.json(posts);
