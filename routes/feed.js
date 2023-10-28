@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const feedControl = require("../controllers/postController");
+const verifyJWT = require("../middlewares/verifyJWT");
 
 router
   .route("/")
   .get(feedControl.getALLpost)
-  .post(feedControl.createNewPost)
-  .put(feedControl.updatePost)
-  .delete(feedControl.deletePost);
+  .post(verifyJWT, feedControl.createNewPost)
+  .put(verifyJWT, feedControl.updatePost)
+  .delete(verifyJWT, feedControl.deletePost);
 
-router.put("/addComment", feedControl.addComment);
+router.put("/addComment", verifyJWT, feedControl.addComment);
 
 module.exports = router;
