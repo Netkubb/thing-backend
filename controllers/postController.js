@@ -1,6 +1,6 @@
 const db = require("../database/db");
 
-// =======================================================================
+// ============================= GET ALL POST ====================================
 
 const getALLpost = async (req, res) => {
   // get all post
@@ -16,7 +16,7 @@ const getALLpost = async (req, res) => {
   res.json(posts);
 };
 
-// =======================================================================
+// ============================ CREATE POST ====================================
 
 const createNewPost = async (req, res) => {
   // if no URL
@@ -39,7 +39,7 @@ const createNewPost = async (req, res) => {
   }
 };
 
-// =======================================================================
+// ======================= UPDATE POST ====================================
 
 const updatePost = async (req, res) => {
   // no ID
@@ -79,7 +79,7 @@ const updatePost = async (req, res) => {
   res.json({ message: "Post updated successfully" });
 };
 
-// =======================================================================
+// ======================== DELETE POST ===================================
 
 const deletePost = async (req, res) => {
   if (!req?.body?.id)
@@ -104,7 +104,23 @@ const deletePost = async (req, res) => {
   }
 };
 
-// =======================================================================
+// =================== GET POST =============================
+
+const getPost = async (req, res) => {
+  if (!req?.body?.id)
+    return res.status(400).json({ message: "post ID require" });
+
+  const { id } = req.body;
+
+  const queryID = await db.collection("post").get();
+  const postDoc = queryID.docs.find((pos) => pos.id === id);
+
+  if (!postDoc)
+    return res.status(400).json({ message: `post ID ${id} not found` });
+
+  res.json(postDoc.data());
+};
+// ============================ ADD COMMENT ======================================
 
 const addComment = async (req, res) => {
   if (!req?.body?.id)
@@ -154,5 +170,6 @@ module.exports = {
   createNewPost,
   updatePost,
   deletePost,
+  getPost,
   addComment,
 };

@@ -10,6 +10,8 @@ router
   .put(verifyJWT, feedControl.updatePost)
   .delete(verifyJWT, feedControl.deletePost);
 
+router.route("/post").get(feedControl.getPost);
+
 router.put("/addComment", verifyJWT, feedControl.addComment);
 
 module.exports = router;
