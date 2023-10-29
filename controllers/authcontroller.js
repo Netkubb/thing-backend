@@ -9,19 +9,16 @@ const handlerLogin = async (req, res) => {
     return res.status(401).json({ message: "need username and password" });
 
   const query = await db.collection("user").get();
-  const queryFound = query.docs.map((doc) => doc.data());
-  //console.log(queryFound);
 
-  const foundUser = queryFound.filter((user) => user.username === username);
-  //console.log(foundUser[0]);
+  const foundUser = query.docs.find(
+    (user) => user.data().username === username
+  );
+  //console.log(foundUser.id);
 
-  if (foundUser.length === 0)
+  if (!foundUser)
     return res.status(404).json({ message: "Incorrect username" });
 
-  console.log(password);
-  console.log(foundUser[0].password);
-
-  const match = await bcrypt.compare(password, foundUser[0].password);
+  const match = await bcrypt.compare(password, foundUser.data().password);
 
   console.log(match);
   // match password
@@ -33,6 +30,19 @@ const handlerLogin = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "3d" }
     );
+
+    // เก็บ token
+
+    const userToken = {};
+    userToken.token = accessToken;
+
+    try {
+      await db.collection("user").doc(foundUser.id).update(userToken);
+    } catch (err) {
+      console.error(err);
+    }
+
+    //
 
     res.cookie("jwt", accessToken, {
       httpOnly: true,
