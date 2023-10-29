@@ -1,4 +1,4 @@
-const { storage } = require("../database/db");
+const { storage, db } = require("../database/db");
 const bucketName = "thinc-humungousaur.appspot.com";
 const bucket = storage.bucket(bucketName);
 
@@ -24,8 +24,12 @@ const uploadFileController = async (req, res) => {
     return res.status(500).send("File upload error: " + err);
   });
 
-  stream.on("finish", () => {
-    return res.status(200).send("File uploaded successfully.");
+  stream.on("finish", async () => {
+    const url = await storage.bucket(bucketName).file(filename).getSignedUrl({
+      action: "read",
+      expires: "03-09-2491",
+    });
+    return res.status(200).send({message:"File uploaded successfully.", url:url[0]});
   });
 
   stream.end(fileBuffer);
