@@ -1,8 +1,11 @@
 const db = require("../database/db");
 
 const getUserProfile = async (req, res) => {
-  if (!req?.body?.token) return res.status(401).json({ message: "No token" });
-  const token = req.body.token;
+  if (!req.header("Authorization"))
+    return res.status(401).json({ message: "No req header" });
+
+  const token = req.header("Authorization").replace("Bearer ", "");
+  if (!token) return res.status(401).json({ message: "No token" });
 
   const query = await db.collection("user").get();
   const foundUser = query.docs.find((user) => user.data().token === token);
