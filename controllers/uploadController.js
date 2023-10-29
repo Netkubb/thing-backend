@@ -16,7 +16,7 @@ const uploadFileController = async (req, res) => {
   // destination to storage
   const stream = fileUpload.createWriteStream({
     metadata: {
-      contentType: file.mimetype,
+      contentType: file.mimetype, // ex pdf
     },
   });
 

@@ -6,9 +6,8 @@ const getALLpost = async (req, res) => {
   // get all post
   const postsQuery = await db.collection("post").get();
   const posts = postsQuery.docs.map((post) => {
-    const postData = post.data();
     const postId = post.id;
-    return { id: postId, ...postData };
+    return { id: postId };
   });
   console.log("hi");
   // No content
