@@ -32,6 +32,7 @@ const handlerRegister = async (req, res) => {
     const result = await db.collection("user").add({
       username: username,
       password: hashedPwd,
+      bulb: 10000,
     }); // --------------------
     //console.log(result);
     res.status(201).json({ success: `New user ${username} created!` });
