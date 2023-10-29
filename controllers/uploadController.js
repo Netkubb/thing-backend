@@ -29,7 +29,9 @@ const uploadFileController = async (req, res) => {
       action: "read",
       expires: "03-09-2491",
     });
-    return res.status(200).send({message:"File uploaded successfully.", url:url[0]});
+    return res
+      .status(200)
+      .send({ message: "File uploaded successfully.", url: url[0] });
   });
 
   stream.end(fileBuffer);
