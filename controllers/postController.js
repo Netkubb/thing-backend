@@ -158,7 +158,7 @@ const addComment = async (req, res) => {
       .collection("post")
       .doc(post.id)
       .update({ comment: UpdateComment_String });
-    res.json({ message: "Add comment successfully" });
+    res.json([NewComment_Json]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to add comment" });
