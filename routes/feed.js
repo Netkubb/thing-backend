@@ -23,6 +23,6 @@ router.post(
   uploadControl.uploadFileController
 );
 
-router.put("/addComment", verifyJWT, feedControl.addComment);
+router.put("/addComment", feedControl.addComment);
 
 module.exports = router;
