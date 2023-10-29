@@ -8,6 +8,7 @@ const feedRoutes = require("./routes/feed");
 const auth = require("./routes/auth");
 const storage = require("./database/db");
 const db = storage.db;
+const bucket = storage.storage;
 
 app.use(express.json());
 app.use(cors());
