@@ -107,10 +107,10 @@ const deletePost = async (req, res) => {
 // =================== GET POST =============================
 
 const getPost = async (req, res) => {
-  if (!req?.body?.id)
+  if (!req?.query?.id)
     return res.status(400).json({ message: "post ID require" });
 
-  const { id } = req.body;
+  const { id } = req.query;
 
   const queryID = await db.collection("post").get();
   const postDoc = queryID.docs.find((pos) => pos.id === id);
