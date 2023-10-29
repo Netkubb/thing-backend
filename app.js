@@ -6,7 +6,8 @@ require("dotenv").config();
 
 const feedRoutes = require("./routes/feed");
 const auth = require("./routes/auth");
-const db = require("./database/db");
+const storage = require("./database/db");
+const db = storage.db;
 
 app.use(express.json());
 app.use(cors());

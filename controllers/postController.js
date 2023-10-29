@@ -1,5 +1,5 @@
-const db = require("../database/db");
-
+const storage = require("../database/db");
+const db = storage.db;
 // ============================= GET ALL POST ====================================
 
 const getALLpost = async (req, res) => {

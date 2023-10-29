@@ -1,5 +1,5 @@
-const db = require("../database/db");
-
+const storage = require("../database/db");
+const db = storage.db;
 const getUserProfile = async (req, res) => {
   if (!req.header("Authorization"))
     return res.status(401).json({ message: "No req header" });
