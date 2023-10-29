@@ -22,7 +22,7 @@ const createNewPost = async (req, res) => {
   if (!req?.body?.videoURL) {
     return res.status(400).json({ message: "No video link found" });
   }
-  const { videoURL, like, caption, comment } = req.body;
+  const { videoURL, like, caption, comment, username } = req.body;
 
   try {
     // post new data
@@ -31,6 +31,7 @@ const createNewPost = async (req, res) => {
       like: like,
       caption: caption,
       comment: comment,
+      username: username,
     });
     res.status(201).json({ massege: "create new post sucessful" });
   } catch (err) {
